@@ -215,51 +215,9 @@
             z-index: 10;
         }
 
-        /* Premium Badge - Bottom Right of Thumbnail */
+        /* Premium badge hidden for this layout */
         .premium-badge {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background-color: rgba(0, 0, 0, 0.8);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .premium-badge svg {
-            width: 18px;
-            height: 18px;
-            fill: #ffc314;
-        }
-
-        .row-2 .premium-badge,
-        .row-3 .premium-badge,
-        .row-4 .premium-badge {
-            width: 28px;
-            height: 28px;
-        }
-
-        .row-2 .premium-badge svg,
-        .row-3 .premium-badge svg,
-        .row-4 .premium-badge svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        .row-2 .category-badge,
-        .row-3 .category-badge,
-        .row-4 .category-badge {
-            font-size: 10px;
-            padding: 3px 8px;
-        }
-
-        /* Hide crown variant */
-        body.hide-crown .premium-badge {
-            display: none;
+            display: none !important;
         }
 
         /* Headline - Below Image */
@@ -385,16 +343,6 @@
         .hero-grid .category-badge {
             font-size: 10px;
             padding: 3px 8px;
-        }
-
-        .hero-grid .premium-badge {
-            width: 28px;
-            height: 28px;
-        }
-
-        .hero-grid .premium-badge svg {
-            width: 14px;
-            height: 14px;
         }
 
         /* White background variant for non-hero cards */
@@ -1591,17 +1539,12 @@
         </div>
 
         <div class="toggles-bar">
-            <button class="toggle-button" onclick="toggleCrownPosition()">Hide Crown</button>
             <button class="toggle-button" onclick="toggleCardColor()">White Cards</button>
             <button class="toggle-button" onclick="toggleAds()">Toggle Ads</button>
         </div>
     </main>
 
     <script>
-        function toggleCrownPosition() {
-            document.body.classList.toggle('hide-crown');
-        }
-
         function toggleAds() {
             document.body.classList.toggle('show-ads');
         }
