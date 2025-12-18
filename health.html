@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deccan Herald</title>
+    <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Hidden SVG Definitions */
+        .svg-defs {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --hero-accent: #d52b1e;       /* hero story background */
+            --card-accent: #f7d4cf;       /* lighter accent for non-hero overlays */
+            --accent: #e35c4f;            /* UI accent (toggles, buttons) */
+            --accent-dark: #c74337;       /* darker hover */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background-color: #ffffff;
+            padding: 16px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-location {
+            font-size: 12px;
+            font-weight: 700;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        .logo-with-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .logo-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .powered-by {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .powered-by-label {
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .powered-by img {
+            height: 18px;
+            width: auto;
+            display: block;
+        }
+
+        .menu-icon {
+            cursor: pointer;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Toggle Button */
+        .toggle-button {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .toggle-button:hover {
+            background-color: var(--accent-dark);
+        }
+
+        /* Toggle bar below pagination */
+        .toggles-bar {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 12px 24px;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 12px;
+        }
+
+        .status-message {
+            padding: 10px 12px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .status-message.error {
+            color: #b00020;
+        }
+
+        .news-block {
+            margin-bottom: 24px;
+        }
+
+        /* Story Card */
+        .story-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .story-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14);
+        }
+
+        .story-card.hidden {
+            display: none;
+        }
+
+        .story-image-container {
+            position: relative;
+            width: 100%;
+            padding-top: 66.67%;
+            overflow: hidden;
+        }
+
+        .story-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Category Badge - Top Left */
+        .category-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            z-index: 10;
+        }
+
+        /* Premium Badge - Bottom Right of Thumbnail */
+        .premium-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .premium-badge svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffc314;
+        }
+
+        .row-2 .premium-badge,
+        .row-3 .premium-badge,
+        .row-4 .premium-badge {
+            width: 28px;
+            height: 28px;
+        }
+
+        .row-2 .premium-badge svg,
+        .row-3 .premium-badge svg,
+        .row-4 .premium-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .row-2 .category-badge,
+        .row-3 .category-badge,
+        .row-4 .category-badge {
+            font-size: 10px;
+            padding: 3px 8px;
+        }
+
+        /* Hide crown variant */
+        body.hide-crown .premium-badge {
+            display: none;
+        }
+
+        /* Headline - Below Image */
+        .headline-overlay {
+            background-color: var(--card-accent);
+            color: #000000;
+            padding: 12px;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* Hero cards use deeper accent */
+        .row-1 .headline-overlay {
+            background-color: var(--hero-accent);
+            color: #ffffff;
+        }
+
+        /* Hero headline classes */
+        .hero-headline {
+            margin: 0;
+            font-size: 24px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .hero-subheadline {
+            display: -webkit-box;
+            margin: 12px 0 0 0;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Row 1 - Hero Story (Full Width) */
+        .row-1 {
+            margin-bottom: 12px;
+        }
+
+        /* Hero Grid - 2x2 grid on mobile */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .hero-grid .story-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-grid .story-card .headline-overlay {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Row 3 & 4 - Full Width Stories - Horizontal Layout */
+        .row-3, .row-4 {
+            margin-bottom: 12px;
+        }
+
+        .row-3 .story-card,
+        .row-4 .story-card {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .row-3 .story-image-container,
+        .row-4 .story-image-container {
+            width: 40%;
+            padding-top: 26.67%;
+            flex-shrink: 0;
+        }
+
+        .row-3 .headline-overlay,
+        .row-4 .headline-overlay {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 12px;
+            font-size: 18px;
+            background-color: var(--card-accent);
+            color: #000000;
+        }
+
+        /* Adjust font size for smaller cards in row 2 */
+        .row-2 .headline-overlay {
+            font-size: 18px;
+            padding: 10px;
+        }
+
+        .row-2 .category-badge {
+            font-size: 10px;
+            padding: 3px 8px;
+        }
+
+        /* Non-hero stories - muted colors for less attention */
+        .hero-grid .headline-overlay,
+        .row-2 .headline-overlay,
+        .row-3 .headline-overlay,
+        .row-4 .headline-overlay {
+            background-color: var(--card-accent);
+            color: #000000;
+        }
+
+        /* Hero grid cards styling (smaller cards) */
+        .hero-grid .headline-overlay {
+            font-size: 18px;
+            padding: 10px;
+        }
+
+        .hero-grid .category-badge {
+            font-size: 10px;
+            padding: 3px 8px;
+        }
+
+        .hero-grid .premium-badge {
+            width: 28px;
+            height: 28px;
+        }
+
+        .hero-grid .premium-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* White background variant for non-hero cards */
+        body.white-cards .hero-grid .headline-overlay,
+        body.white-cards .row-2 .headline-overlay,
+        body.white-cards .row-3 .headline-overlay,
+        body.white-cards .row-4 .headline-overlay {
+            background-color: #ffffff;
+        }
+
+        /* Story Metadata */
+        .story-metadata {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Hero story metadata - white with opacity */
+        .row-1 .story-metadata {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Non-hero story metadata - darker color */
+        .hero-grid .story-metadata,
+        .row-2 .story-metadata,
+        .row-3 .story-metadata,
+        .row-4 .story-metadata {
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Smaller font for row 2 cards and hero-grid */
+        .hero-grid .story-metadata,
+        .row-2 .story-metadata {
+            font-size: 10px;
+            margin-top: 6px;
+        }
+
+        .metadata-separator {
+            opacity: 0.5;
+        }
+
+        .read-time {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .read-icon {
+            width: 14px;
+            height: 14px;
+            display: inline-block;
+        }
+
+        .row-1 .read-icon {
+            fill: rgba(255, 255, 255, 0.85);
+        }
+
+        .hero-grid .read-icon,
+        .row-2 .read-icon,
+        .row-3 .read-icon,
+        .row-4 .read-icon {
+            fill: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Smaller icon for row 2 and hero-grid */
+        .hero-grid .read-icon,
+        .row-2 .read-icon {
+            width: 12px;
+            height: 12px;
+        }
+
+        .publish-time {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .time-icon {
+            width: 14px;
+            height: 14px;
+            display: inline-block;
+        }
+
+        .row-1 .time-icon {
+            fill: rgba(255, 255, 255, 0.85);
+        }
+
+        .hero-grid .time-icon,
+        .row-2 .time-icon,
+        .row-3 .time-icon,
+        .row-4 .time-icon {
+            fill: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Smaller icon for row 2 and hero-grid */
+        .hero-grid .time-icon,
+        .row-2 .time-icon {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 24px 12px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            margin-top: 24px;
+        }
+
+        .pagination-button {
+            background-color: #ffffff;
+            color: var(--accent);
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .pagination-button:hover:not(:disabled) {
+            background-color: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent-dark);
+        }
+
+        .pagination-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination-pages {
+            display: flex;
+            gap: 4px;
+            margin: 0 8px;
+        }
+
+        .pagination-page {
+            background-color: #ffffff;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            min-width: 40px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .pagination-page:hover {
+            background-color: #f5f5f5;
+            border-color: var(--accent);
+        }
+
+        .pagination-page.active {
+            background-color: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent-dark);
+        }
+
+        .pagination-ellipsis {
+            padding: 8px 4px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Ad Slots - Hidden by default */
+        .ad-slot {
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            width: 300px;
+            height: 250px;
+            margin: 24px auto;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        body.show-ads .ad-slot {
+            display: flex;
+        }
+
+        .ad-label {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .ad-placeholder {
+            color: #ccc;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Billboard Ads - Hidden on mobile */
+        .billboard-ad {
+            display: none;
+        }
+
+        /* Desktop Layout */
+        @media (min-width: 1024px) {
+            body {
+                max-width: 1400px;
+            }
+
+            .header {
+                padding: 20px 32px;
+            }
+
+            .logo-location {
+                font-size: 14px;
+            }
+
+            .logo-title {
+                font-size: 20px;
+            }
+
+            .content {
+                padding: 24px;
+            }
+
+            /* Hero Section - Row 1 + First 4 stories in 2x2 grid */
+            .hero-section {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+
+            .hero-section .row-1 {
+                margin-bottom: 0;
+                height: 100%;
+            }
+
+            .hero-section .row-1 .story-card {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+
+            .hero-section .row-1 .story-image-container {
+                padding-top: 0;
+                height: 0;
+                flex-grow: 1;
+                flex-shrink: 1;
+            }
+
+            .hero-section .row-1 .headline-overlay {
+                font-size: 30px;
+                padding: 18px;
+                flex-grow: 0;
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .hero-headline {
+                font-size: 30px;
+            }
+
+            .hero-subheadline {
+                display: -webkit-box;
+                font-size: 16px;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* 2x2 Grid on the right */
+            .hero-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                gap: 20px;
+                margin-bottom: 0;
+            }
+
+            .hero-grid .story-card {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                margin-bottom: 0;
+            }
+
+            .hero-grid .story-card .story-image-container {
+                flex-shrink: 0;
+            }
+
+            .hero-grid .story-card .headline-overlay {
+                font-size: 22px;
+                padding: 10px;
+                background-color: var(--card-accent);
+                color: #000000;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .hero-grid .story-metadata {
+                color: rgba(0, 0, 0, 0.7);
+            }
+
+            .hero-grid .read-icon,
+            .hero-grid .time-icon {
+                fill: rgba(0, 0, 0, 0.7);
+            }
+
+            /* Remaining content in 2-column grid */
+            .content-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+
+            /* Keep horizontal layout for row 3 & 4 on desktop */
+            .content-grid .row-3,
+            .content-grid .row-4 {
+                margin-bottom: 0;
+            }
+
+            .content-grid .row-3 .story-card,
+            .content-grid .row-4 .story-card {
+                display: flex;
+                flex-direction: row;
+                height: 100%;
+            }
+
+            .content-grid .row-3 .story-image-container,
+            .content-grid .row-4 .story-image-container {
+                width: 40%;
+                padding-top: 26.67%;
+                flex-shrink: 0;
+            }
+
+            .content-grid .row-3 .headline-overlay,
+            .content-grid .row-4 .headline-overlay {
+                width: 60%;
+                font-size: 22px;
+                padding: 12px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .hero-grid .category-badge,
+            .content-grid .category-badge {
+                font-size: 12px;
+            }
+
+            .row-1 .category-badge {
+                font-size: 16px;
+            }
+
+            .story-metadata {
+                font-size: 14px;
+            }
+
+            .hero-grid .story-metadata {
+                font-size: 14px;
+            }
+
+            .read-icon,
+            .time-icon {
+                width: 16px;
+                height: 16px;
+            }
+
+            .hero-grid .read-icon,
+            .hero-grid .time-icon {
+                width: 16px;
+                height: 16px;
+            }
+
+            .pagination {
+                padding: 32px 24px;
+            }
+
+            .pagination-button {
+                padding: 12px;
+            }
+
+            .pagination-button svg {
+                width: 24px;
+                height: 24px;
+            }
+
+            .pagination-page {
+                padding: 10px 14px;
+                font-size: 15px;
+                min-width: 44px;
+            }
+
+            .ad-slot {
+                display: none !important;
+            }
+
+            /* Desktop Billboard Ads - Hidden by default */
+            .billboard-ad {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background-color: #f5f5f5;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                width: 970px;
+                height: 250px;
+                margin: 32px auto;
+                position: relative;
+            }
+
+            body.show-ads .billboard-ad {
+                display: flex;
+            }
+
+            .billboard-ad .ad-label {
+                position: absolute;
+                top: -20px;
+                font-size: 10px;
+                color: #999;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 500;
+            }
+
+            .billboard-ad .ad-placeholder {
+                color: #ccc;
+                font-size: 16px;
+                font-weight: 500;
+            }
+
+            /* White background variant for desktop */
+            body.white-cards .hero-grid .story-card .headline-overlay {
+                background-color: #ffffff;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Hidden SVG Definitions -->
+    <svg class="svg-defs">
+        <defs>
+            <symbol id="crown-icon" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M21.8382 11.1263L21.609 13.5616C21.2313 17.5742 21.0425 19.5805 19.8599 20.7902C18.6773 22 16.9048 22 13.3599 22H10.6401C7.09517 22 5.32271 22 4.14009 20.7902C2.95748 19.5805 2.76865 17.5742 2.391 13.5616L2.16181 11.1263C1.9818 9.2137 1.8918 8.25739 2.21899 7.86207C2.39598 7.64823 2.63666 7.5172 2.89399 7.4946C3.36968 7.45282 3.96708 8.1329 5.16187 9.49307C5.77977 10.1965 6.08872 10.5482 6.43337 10.6027C6.62434 10.6328 6.81892 10.6018 6.99526 10.5131C7.31351 10.3529 7.5257 9.91812 7.95007 9.04852L10.1869 4.46486C10.9888 2.82162 11.3898 2 12 2C12.6102 2 13.0112 2.82162 13.8131 4.46485L16.0499 9.04851C16.4743 9.91812 16.6865 10.3529 17.0047 10.5131C17.1811 10.6018 17.3757 10.6328 17.5666 10.6027C17.9113 10.5482 18.2202 10.1965 18.8381 9.49307C20.0329 8.1329 20.6303 7.45282 21.106 7.4946C21.3633 7.5172 21.604 7.64823 21.781 7.86207C22.1082 8.25739 22.0182 9.2137 21.8382 11.1263ZM12.9524 12.699L12.8541 12.5227C12.4741 11.841 12.2841 11.5002 12 11.5002C11.7159 11.5002 11.5259 11.841 11.1459 12.5227L11.0476 12.699C10.9397 12.8927 10.8857 12.9896 10.8015 13.0535C10.7173 13.1174 10.6125 13.1411 10.4028 13.1886L10.2119 13.2318C9.47396 13.3987 9.10501 13.4822 9.01723 13.7645C8.92945 14.0468 9.18097 14.3409 9.68403 14.9291L9.81418 15.0813C9.95713 15.2485 10.0286 15.3321 10.0608 15.4355C10.0929 15.5389 10.0821 15.6504 10.0605 15.8734L10.0408 16.0765C9.96476 16.8613 9.92674 17.2538 10.1565 17.4282C10.3864 17.6027 10.7318 17.4436 11.4227 17.1255L11.6014 17.0432C11.7978 16.9528 11.8959 16.9076 12 16.9076C12.1041 16.9076 12.2022 16.9528 12.3986 17.0432L12.5773 17.1255C13.2682 17.4436 13.6136 17.6027 13.8435 17.4282C14.0733 17.2538 14.0352 16.8613 13.9592 16.0765L13.9395 15.8734C13.9179 15.6504 13.9071 15.5389 13.9392 15.4355C13.9714 15.3321 14.0429 15.2485 14.1858 15.0813L14.316 14.9291C14.819 14.3409 15.0706 14.0468 14.9828 13.7645C14.895 13.4822 14.526 13.3987 13.7881 13.2318L13.5972 13.1886C13.3875 13.1411 13.2827 13.1174 13.1985 13.0535C13.1143 12.9896 13.0603 12.8927 12.9524 12.699Z"/>
+            </symbol>
+            <symbol id="read-icon" viewBox="0 0 24 24">
+                <g>
+                    <path d="M12,18.883a10.8,10.8,0,0,1-9.675-5.728,2.6,2.6,0,0,1,0-2.31A10.8,10.8,0,0,1,12,5.117a10.8,10.8,0,0,1,9.675,5.728h0a2.6,2.6,0,0,1,0,2.31A10.8,10.8,0,0,1,12,18.883ZM12,6.117a9.787,9.787,0,0,0-8.78,5.176,1.586,1.586,0,0,0,0,1.415A9.788,9.788,0,0,0,12,17.883a9.787,9.787,0,0,0,8.78-5.176,1.584,1.584,0,0,0,0-1.414h0A9.787,9.787,0,0,0,12,6.117Z"/>
+                    <path d="M12,16.049A4.049,4.049,0,1,1,16.049,12,4.054,4.054,0,0,1,12,16.049Zm0-7.1A3.049,3.049,0,1,0,15.049,12,3.052,3.052,0,0,0,12,8.951Z"/>
+                    <circle cx="12" cy="12" r="2.028"/>
+                </g>
+            </symbol>
+            <symbol id="time-icon" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM11.8284 6.75736C12.3807 6.75736 12.8284 7.20507 12.8284 7.75736V12.7245L16.3553 14.0653C16.8716 14.2615 17.131 14.8391 16.9347 15.3553C16.7385 15.8716 16.1609 16.131 15.6447 15.9347L11.4731 14.349C11.085 14.2014 10.8284 13.8294 10.8284 13.4142V7.75736C10.8284 7.20507 11.2761 6.75736 11.8284 6.75736Z"/>
+            </symbol>
+        </defs>
+    </svg>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-location">WELLNESS DIGEST</span>
+            <span class="logo-with-icon">
+                <span class="logo-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4.5 13h3l1.5-4 3 8 2-6 1 2h4" />
+                        <path d="M19.5 7a4 4 0 0 0-7.07-2.83L12 4.6l-.43-.43A4 4 0 0 0 4.5 7c0 5 7.5 9.5 7.5 9.5S19.5 12 19.5 7Z" />
+                    </svg>
+                </span>
+                <span class="logo-title">Health Hub</span>
+            </span>
+            <span class="powered-by">
+                <span class="powered-by-label">Powered by</span>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Eli_Lilly_and_Company.svg/1280px-Eli_Lilly_and_Company.svg.png"
+                     alt="Eli Lilly and Company logo">
+            </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="menu-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+        <div id="statusMessage" class="status-message" aria-live="polite">Loading latest health stories...</div>
+        <!-- Billboard Ad (Before first story) -->
+        <div class="billboard-ad">
+            <span class="ad-label">Advertisement</span>
+            <span class="ad-placeholder">970 x 250</span>
+        </div>
+
+        <section class="news-block">
+            <div class="hero-section">
+                <div class="row-1">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1504439468489-c8920d796a29?auto=format&fit=crop&w=1200&q=80"
+                                 alt="Community health clinic hallway"
+                                 class="story-image">
+                            <span class="category-badge">PUBLIC HEALTH</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            <h2 class="hero-headline">National wellness drive brings free screenings to local clinics</h2>
+                            <p class="hero-subheadline">Mobile care teams offer blood pressure, diabetes, and cancer checks in underserved neighborhoods</p>
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    6 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    2h ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="hero-grid">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400"
+                                 alt="Morning run club"
+                                 class="story-image">
+                            <span class="category-badge">FITNESS &amp; MOVEMENT</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Sunrise run clubs turn car-free streets into weekly rituals
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    4 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    45m ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1581090700227-1e37b190418e?w=400"
+                                 alt="Doctor using digital tablet"
+                                 class="story-image">
+                            <span class="category-badge">DIGITAL HEALTH</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Hospitals test AI triage to cut emergency room wait times
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    5 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    1h ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400"
+                                 alt="Colorful nutritious bowls"
+                                 class="story-image">
+                            <span class="category-badge">NUTRITION</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Dietitians champion rainbow plates to rebuild gut health
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    3 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    Today
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400"
+                                 alt="Quiet room for mindful breaks"
+                                 class="story-image">
+                            <span class="category-badge">MENTAL HEALTH</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Offices add quiet rooms and micro-breaks to curb burnout
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    7 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    2d ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Ad Slot (After 3rd article area) -->
+            <div class="ad-slot">
+                <span class="ad-label">Advertisement</span>
+                <span class="ad-placeholder">300 x 250</span>
+            </div>
+
+            <div class="content-grid">
+                <div class="row-3">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800"
+                                 alt="Healthcare leadership meeting"
+                                 class="story-image">
+                            <span class="category-badge">HEALTHCARE BUSINESS</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Regional hospitals form alliance to share specialists
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    5 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    3d ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="row-4">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800"
+                                 alt="City park with clean air"
+                                 class="story-image">
+                            <span class="category-badge">ENVIRONMENTAL HEALTH</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Cleaner air days cut asthma ER visits by 12 percent, study finds
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    8 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    Dec 5
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Ad Slot (After 7th article) -->
+            <div class="ad-slot">
+                <span class="ad-label">Advertisement</span>
+                <span class="ad-placeholder">300 x 250</span>
+            </div>
+        </section>
+
+        <!-- Billboard Ad (After 7 stories) -->
+        <div class="billboard-ad">
+            <span class="ad-label">Advertisement</span>
+            <span class="ad-placeholder">970 x 250</span>
+        </div>
+
+        <section class="news-block">
+            <div class="hero-section">
+                <div class="row-1">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?w=800"
+                                 alt="Clinician greeting patient at neighborhood clinic"
+                                 class="story-image">
+                            <span class="category-badge">COMMUNITY CARE</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            <h2 class="hero-headline">Neighborhood clinics add evening hours for working families</h2>
+                            <p class="hero-subheadline">Extended teams aim to improve follow-ups for chronic care patients</p>
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    6 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    3h ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="hero-grid">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400"
+                                 alt="Nurse checking blood pressure"
+                                 class="story-image">
+                            <span class="category-badge">PREVENTIVE CARE</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Heart-age checks help people in their 30s spot risk early
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    4 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    40m ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?w=400"
+                                 alt="Vaccine vial"
+                                 class="story-image">
+                            <span class="category-badge">GLOBAL HEALTH</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            New malaria vaccine begins rollout across sub-Saharan clinics
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    7 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    5h ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400"
+                                 alt="Fresh produce at market"
+                                 class="story-image">
+                            <span class="category-badge">FOOD AS MEDICINE</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Produce prescription pilots cut grocery bills for diabetes patients
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    3 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    Today
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=400"
+                                 alt="Physical therapist assisting patient"
+                                 class="story-image">
+                            <span class="category-badge">MEDTECH</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Soft robotic sleeves support rehab after stroke
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    5 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    1d ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Ad Slot (After 3rd article area) -->
+            <div class="ad-slot">
+                <span class="ad-label">Advertisement</span>
+                <span class="ad-placeholder">300 x 250</span>
+            </div>
+
+            <div class="content-grid">
+                <div class="row-3">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?w=800"
+                                 alt="Students in counseling room"
+                                 class="story-image">
+                            <span class="category-badge">MENTAL HEALTH</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Counselors urge mental health first aid training in schools
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    6 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    2d ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="row-4">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?w=800"
+                                 alt="Community 5K runners at sunrise"
+                                 class="story-image">
+                            <span class="category-badge">COMMUNITY FITNESS</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            City hosts inclusive 5K to fund cancer care navigation
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    4 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    Dec 4
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Ad Slot (After 7th article) -->
+            <div class="ad-slot">
+                <span class="ad-label">Advertisement</span>
+                <span class="ad-placeholder">300 x 250</span>
+            </div>
+        </section>
+
+        <!-- Billboard Ad (After 7 stories) -->
+        <div class="billboard-ad">
+            <span class="ad-label">Advertisement</span>
+            <span class="ad-placeholder">970 x 250</span>
+        </div>
+
+        <section class="news-block">
+            <div class="hero-section">
+                <div class="row-1">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://www.embl.org/news/wp-content/uploads/2023/07/Pathogens-Portal-1000x600-1.jpg"
+                                 alt="Scientists analyzing samples for pathogen data sharing"
+                                 class="story-image">
+                            <span class="category-badge">GLOBAL HEALTH SECURITY</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            <h2 class="hero-headline">Nations sign pact to share pathogen data within 48 hours</h2>
+                            <p class="hero-subheadline">New fund backs rapid sequencing labs for faster outbreak alerts</p>
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    7 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    1h ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="hero-grid">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1454165205744-3b78555e5572?w=400"
+                                 alt="Policy meeting"
+                                 class="story-image">
+                            <span class="category-badge">HEALTH POLICY</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Regulators cap out-of-pocket costs on essential chronic medicines
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    4 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    30m ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://hscnews.usc.edu/wp-content/uploads/2020/05/7-West-COVID-19_17.jpg"
+                                 alt="Nursing students practicing in simulation lab"
+                                 class="story-image">
+                            <span class="category-badge">MEDICAL EDUCATION</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Nursing schools expand simulation labs to train more ICU-ready staff
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    5 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    2h ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400"
+                                 alt="Forest wellness retreat"
+                                 class="story-image">
+                            <span class="category-badge">WELLNESS TRAVEL</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Eco-retreats pair sleep coaching with forest bathing weekends
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    3 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    Today
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1493612276216-ee3925520721?w=400"
+                                 alt="Scientists pipetting samples"
+                                 class="story-image">
+                            <span class="category-badge">MEDICAL RESEARCH</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Gene-editing therapy shows promise for sickle cell patients
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    6 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    6h ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Ad Slot (After 3rd article area) -->
+            <div class="ad-slot">
+                <span class="ad-label">Advertisement</span>
+                <span class="ad-placeholder">300 x 250</span>
+            </div>
+
+            <div class="content-grid">
+                <div class="row-3">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1464306076886-da185f6a9d05?w=800"
+                                 alt="Group cooking together"
+                                 class="story-image">
+                            <span class="category-badge">WELLNESS CULTURE</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Neighborhood cooking nights tackle loneliness and nutrition gaps
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    6 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    1d ago
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="row-4">
+                    <article class="story-card">
+                        <div class="story-image-container">
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800"
+                                 alt="Person checking smartwatch"
+                                 class="story-image">
+                            <span class="category-badge">WEARABLES</span>
+                            <span class="premium-badge">
+                                <svg><use href="#crown-icon"/></svg>
+                            </span>
+                        </div>
+                        <div class="headline-overlay">
+                            Smart rings start tracking blood pressure in early consumer trials
+                            <div class="story-metadata">
+                                <span class="read-time">
+                                    <svg class="read-icon"><use href="#read-icon"/></svg>
+                                    5 min read
+                                </span>
+                                <span class="metadata-separator">&bull;</span>
+                                <span class="publish-time">
+                                    <svg class="time-icon"><use href="#time-icon"/></svg>
+                                    Dec 6
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Ad Slot (After 7th article) -->
+            <div class="ad-slot">
+                <span class="ad-label">Advertisement</span>
+                <span class="ad-placeholder">300 x 250</span>
+            </div>
+        </section>
+
+        <!-- Billboard Ad (After 7 stories) -->
+        <div class="billboard-ad">
+            <span class="ad-label">Advertisement</span>
+            <span class="ad-placeholder">970 x 250</span>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="pagination-button" id="prevBtn" disabled>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <div class="pagination-pages">
+                <button class="pagination-page active" data-page="1">1</button>
+                <button class="pagination-page" data-page="2">2</button>
+                <button class="pagination-page" data-page="3">3</button>
+                <span class="pagination-ellipsis">...</span>
+                <button class="pagination-page" data-page="10">10</button>
+            </div>
+            <button class="pagination-button" id="nextBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <div class="toggles-bar">
+            <button class="toggle-button" onclick="toggleCrownPosition()">Hide Crown</button>
+            <button class="toggle-button" onclick="toggleCardColor()">White Cards</button>
+            <button class="toggle-button" onclick="toggleAds()">Toggle Ads</button>
+        </div>
+    </main>
+
+    <script>
+        function toggleCrownPosition() {
+            document.body.classList.toggle('hide-crown');
+        }
+
+        function toggleAds() {
+            document.body.classList.toggle('show-ads');
+        }
+
+        function toggleCardColor() {
+            document.body.classList.toggle('white-cards');
+        }
+
+        const HOME_SLUG = 'home';
+        const API_BASE = 'https://www.deccanherald.com/api/v1/collections';
+        const PROXY_PREFIX = '/proxy?url='; // served by serve.py
+        const statusEl = document.getElementById('statusMessage');
+        const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&auto=format&fit=crop';
+
+        function setStatus(message, isError = false) {
+            if (!statusEl) return;
+            statusEl.textContent = message;
+            statusEl.classList.toggle('error', isError);
+        }
+
+        function escapeHtml(value = '') {
+            return value
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function relativeTime(timestampMs) {
+            if (!timestampMs) return '';
+            const diff = Date.now() - timestampMs;
+            const minutes = Math.floor(diff / 60000);
+            if (minutes < 1) return 'just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}h ago`;
+            const days = Math.floor(hours / 24);
+            return `${days}d ago`;
+        }
+
+        function resolveImage(story) {
+            const heroKey = story['hero-image-s3-key'] || story['hero-image-key'] || story?.['hero-image']?.['image-s3-key'];
+            const directUrl = story['hero-image-url'] || story['hero-image']?.url || story['hero-image-hyperlink'];
+            if (directUrl) return directUrl;
+            if (heroKey) return `https://images.assettype.com/${heroKey}`;
+            return FALLBACK_IMAGE;
+        }
+
+        function normalizeStory(story) {
+            const headline = story?.alternative?.home?.default?.headline || story?.headline || 'Untitled story';
+            const section = story?.sections?.[0]?.['display-name'] || story?.sections?.[0]?.name || 'News';
+            const publishedAt = story?.['last-published-at'] || story?.['first-published-at'] || Date.now();
+            const wordCount = story ? story['word-count'] : 0;
+            const readTime = story?.['read-time']
+                || story?.metadata?.['read-time']
+                || (wordCount ? Math.max(1, Math.round(wordCount / 200)) : 3);
+
+            return {
+                headline: escapeHtml(headline),
+                subheadline: escapeHtml(story?.subheadline || ''),
+                section: escapeHtml(section),
+                readTime,
+                publishedAt,
+                timeAgo: relativeTime(publishedAt),
+                image: resolveImage(story),
+                url: story?.url || (story?.slug ? `https://www.deccanherald.com/${story.slug}` : 'https://www.deccanherald.com/')
+            };
+        }
+
+        function buildMetadataHtml(story) {
+            return `<div class="story-metadata">
+                <span class="read-time">
+                    <svg class="read-icon"><use href="#read-icon"></use></svg>
+                    ${story.readTime} min read
+                </span>
+                <span class="metadata-separator">&bull;</span>
+                <span class="publish-time">
+                    <svg class="time-icon"><use href="#time-icon"></use></svg>
+                    ${story.timeAgo || ''}
+                </span>
+            </div>`;
+        }
+
+        function hydrateCard(card, story) {
+            if (!card) return;
+            card.classList.remove('hidden');
+            const img = card.querySelector('.story-image');
+            if (img) {
+                img.src = story.image;
+                img.alt = story.headline;
+            }
+
+            const category = card.querySelector('.category-badge');
+            if (category) category.textContent = story.section;
+
+            const overlay = card.querySelector('.headline-overlay');
+            if (overlay) {
+                const isHero = card.closest('.row-1') !== null;
+                const headlineHtml = isHero
+                    ? `<h2 class="hero-headline">${story.headline}</h2>${story.subheadline ? `<p class="hero-subheadline">${story.subheadline}</p>` : ''}`
+                    : `<div>${story.headline}</div>`;
+                overlay.innerHTML = `${headlineHtml}${buildMetadataHtml(story)}`;
+            }
+
+            if (story.url) {
+                card.style.cursor = 'pointer';
+                card.onclick = () => window.open(story.url, '_blank');
+            }
+        }
+
+        function renderStories(stories) {
+            const cards = Array.from(document.querySelectorAll('.news-block .story-card'));
+            cards.forEach((card, index) => {
+                const story = stories[index];
+                if (!story) {
+                    card.classList.add('hidden');
+                    return;
+                }
+                hydrateCard(card, story);
+            });
+
+            if (!stories.length) {
+                setStatus('No stories found for health collection.', true);
+            } else {
+                setStatus('Showing top health stories.');
+            }
+        }
+
+        function withProxy(url) {
+            return `${PROXY_PREFIX}${encodeURIComponent(url)}`;
+        }
+
+        async function fetchJson(url) {
+            const response = await fetch(withProxy(url));
+            if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+            return response.json();
+        }
+
+        async function loadHomeStories() {
+            try {
+                setStatus('Loading latest stories...');
+                const home = await fetchJson(`${API_BASE}/${HOME_SLUG}`);
+                const collectionSlug = (home?.items || []).find(item => item.slug === 'top-news-today')?.slug
+                    || (home?.items || []).find(item => item.type === 'collection')?.slug;
+                if (!collectionSlug) throw new Error('Home collection is missing story lists.');
+
+                const collection = await fetchJson(`${API_BASE}/${collectionSlug}`);
+                const stories = (collection.items || [])
+                    .filter(item => item.type === 'story' && item.story)
+                    .map(item => normalizeStory(item.story));
+
+                renderStories(stories);
+            } catch (error) {
+                console.error('Failed to load live stories', error);
+                setStatus('Showing health placeholders.');
+            }
+        }
+
+        function initPagination() {
+            let currentPage = 1;
+            const totalPages = 10;
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageButtons = document.querySelectorAll('.pagination-page');
+
+            if (!prevBtn || !nextBtn) return;
+
+            const updatePagination = () => {
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages;
+                pageButtons.forEach(btn => {
+                    const page = parseInt(btn.dataset.page);
+                    btn.classList.toggle('active', page === currentPage);
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                }
+            });
+
+            pageButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentPage = parseInt(btn.dataset.page);
+                    updatePagination();
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHomeStories();
+            initPagination();
+        });
+    </script>
+</body>
+</html>
