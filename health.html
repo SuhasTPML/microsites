@@ -1622,6 +1622,17 @@
             statusEl.classList.toggle('error', isError);
         }
 
+        function normalizeCategoryLabel(value = '') {
+            const trimmed = String(value || '').trim();
+            return trimmed ? trimmed.split(/\s+/)[0] : 'Health';
+        }
+
+        function normalizeCategoryBadges() {
+            document.querySelectorAll('.category-badge').forEach(badge => {
+                badge.textContent = normalizeCategoryLabel(badge.textContent);
+            });
+        }
+
         function escapeHtml(value = '') {
             return value
                 .replace(/&/g, '&amp;')
@@ -1696,7 +1707,7 @@
             }
 
             const category = card.querySelector('.category-badge');
-            if (category) category.textContent = story.section;
+            if (category) category.textContent = normalizeCategoryLabel(story.section);
 
             const overlay = card.querySelector('.headline-overlay');
             if (overlay) {
@@ -1803,6 +1814,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            normalizeCategoryBadges();
             loadHomeStories();
             initPagination();
         });
